@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">testtttt</string>
+    <string name="button_text">Click</string>
+    <string name="title_activity_book_list">bookListActivity</string>
+</resources>
