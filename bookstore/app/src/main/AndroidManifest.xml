@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jerome.testtttt">
+    package="com.example.jerome.bookstore">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.jerome.bookstore.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,10 +20,10 @@
         </activity>
 
         <service
-            android:name=".GetBiersService"
+            android:name="com.example.jerome.bookstore.GetBiersService"
             android:exported="false" />
 
-        <activity android:name=".book_list"></activity>
+        <activity android:name="com.example.jerome.bookstore.BookListActivity"></activity>
     </application>
 
 </manifest>

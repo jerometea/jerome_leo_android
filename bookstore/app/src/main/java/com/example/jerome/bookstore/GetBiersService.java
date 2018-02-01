@@ -1,16 +1,13 @@
-package com.example.jerome.testtttt;
+package com.example.jerome.bookstore;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,8 +60,6 @@ public class GetBiersService extends IntentService {
      * parameters.
      */
     private void handleActionBiers() {
-        Log.i("tag test", "message test");
-
         URL url = null;
         try {
             url = new URL("http://binouze.fabrigli.fr/bieres.json");
@@ -73,8 +68,7 @@ public class GetBiersService extends IntentService {
             conn.connect();
             if(HttpURLConnection.HTTP_OK == conn.getResponseCode()){
                 copyInputStreamToFile(conn.getInputStream(), new File(getCacheDir(), "bieres.json"));
-                Log.i("tag", "Biere json downloaded !");
-                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(book_list.BIERS_UPDATE));
+                Log.i("download", "Biere json downloaded !");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();

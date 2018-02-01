@@ -1,4 +1,4 @@
-package com.example.jerome.testtttt;
+package com.example.jerome.bookstore;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

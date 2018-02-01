@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.jerome.testtttt.MainActivity">
+    tools:context="com.example.jerome.bookstore.MainActivity">
 
     <TextView
         android:layout_width="383dp"

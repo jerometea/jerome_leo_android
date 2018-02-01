@@ -1,4 +1,4 @@
-package com.example.jerome.testtttt;
+package com.example.jerome.bookstore;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,15 +24,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class book_list extends AppCompatActivity {
+public class BookListActivity extends AppCompatActivity {
     public RecyclerView rv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
-
-
 
         rv = findViewById(R.id.rv_biere);
         rv.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
@@ -40,15 +39,15 @@ public class book_list extends AppCompatActivity {
 
         // Broadcast slide 35
         IntentFilter intentFilter = new IntentFilter(BIERS_UPDATE);
-        LocalBroadcastManager.getInstance(this).registerReceiver(new book_list.BierUpdate(),intentFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BookListActivity.BierUpdate(),intentFilter);
 
         JSONArray dataBiers = this.getBiersFromFile();
 
-        book_list.BiersAdapter ba = new book_list.BiersAdapter(dataBiers);
+        BookListActivity.BiersAdapter ba = new BookListActivity.BiersAdapter(dataBiers);
         rv.setAdapter(ba);
 
     }
-    class BiersAdapter extends RecyclerView.Adapter<book_list.BiersAdapter.BierHolder> {
+    class BiersAdapter extends RecyclerView.Adapter<BookListActivity.BiersAdapter.BierHolder> {
 
         public JSONArray getBiers() {
             return biers;
@@ -61,7 +60,7 @@ public class book_list extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(book_list.BiersAdapter.BierHolder holder, int position) {
+        public void onBindViewHolder(BookListActivity.BiersAdapter.BierHolder holder, int position) {
             try {
                 JSONObject b =  this.biers.getJSONObject(position);
                 holder.name.setText(b.getString("name"));
@@ -77,10 +76,10 @@ public class book_list extends AppCompatActivity {
         }
 
         @Override
-        public book_list.BiersAdapter.BierHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public BookListActivity.BiersAdapter.BierHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater li = LayoutInflater.from(parent.getContext());
             View v = li.inflate(R.layout.rv_bier_element, null, false);
-            book_list.BiersAdapter.BierHolder bHolder = new book_list.BiersAdapter.BierHolder(v);
+            BookListActivity.BiersAdapter.BierHolder bHolder = new BookListActivity.BiersAdapter.BierHolder(v);
             return bHolder;
         }
 
@@ -102,8 +101,8 @@ public class book_list extends AppCompatActivity {
     class BierUpdate extends BroadcastReceiver {
         @Override
         public void onReceive (Context context, Intent intent) {
-            Log.d("download finish", "Received"); // prévoir une action de notification ici
-            ((book_list.BiersAdapter)rv.getAdapter()).setNewBiere(getBiersFromFile());
+            Log.d("biers", "display bieres");
+            ((BookListActivity.BiersAdapter)rv.getAdapter()).setNewBiere(getBiersFromFile());
         }
     }
 

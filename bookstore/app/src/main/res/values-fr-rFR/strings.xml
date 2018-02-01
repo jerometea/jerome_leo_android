@@ -2,5 +2,5 @@
 <resources>
     <string name="hello_word">bonjour</string>
     <string name="action_settings">paramètres</string>
-    <string name="button_text">Bouton</string>
+    <string name="button_text">bouton</string>
 </resources>
