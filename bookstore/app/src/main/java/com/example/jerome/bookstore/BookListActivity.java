@@ -1,12 +1,18 @@
 package com.example.jerome.bookstore;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,28 +46,53 @@ public class BookListActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter(BIERS_UPDATE);
         LocalBroadcastManager.getInstance(this).registerReceiver(new BookListActivity.BierUpdate(),intentFilter);
 
-        JSONArray dataBiers = this.getBiersFromFile();
+        JSONObject dataBiers = this.getBiersFromFile();
 
         BookListActivity.BiersAdapter ba = new BookListActivity.BiersAdapter(dataBiers);
         rv.setAdapter(ba);
 
+        Snackbar snackbar = Snackbar.make(rv.getRootView(), "Pokemon list downloaded", Snackbar.LENGTH_LONG);
+        snackbar.show();
+
+
+        final Intent emptyIntent = new Intent();
+        PendingIntent pendingIntent = PendingIntent.getActivity(BookListActivity.this, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        initChannels(BookListActivity.this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(BookListActivity.this, "default")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("Youhou")
+                .setContentText("lol")
+                .setContentIntent(pendingIntent);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, builder.build());
+
     }
     class BiersAdapter extends RecyclerView.Adapter<BookListActivity.BiersAdapter.BierHolder> {
 
-        public JSONArray getBiers() {
+        public JSONObject getBiers() {
             return biers;
         }
 
-        private JSONArray biers;
+        private JSONObject biers;
+        private JSONArray pokemons;
 
-        public BiersAdapter(JSONArray dataBiers){
+        public BiersAdapter(JSONObject dataBiers){
             this.biers = dataBiers;
+            try {
+                this.pokemons = this.biers.getJSONArray("results");
+            }
+            catch(JSONException e ){
+                e.printStackTrace();
+            }
         }
 
         @Override
         public void onBindViewHolder(BookListActivity.BiersAdapter.BierHolder holder, int position) {
             try {
-                JSONObject b =  this.biers.getJSONObject(position);
+                JSONArray ja =  this.biers.getJSONArray("results");
+                this.pokemons = ja;
+                JSONObject b =  ja.getJSONObject(position);
+
                 holder.name.setText(b.getString("name"));
             }
             catch(JSONException e ){
@@ -72,7 +102,7 @@ public class BookListActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return this.biers.length();
+            return this.pokemons.length();
         }
 
         @Override
@@ -83,7 +113,7 @@ public class BookListActivity extends AppCompatActivity {
             return bHolder;
         }
 
-        public void setNewBiere (JSONArray biers){
+        public void setNewBiere (JSONObject biers){
             this.biers = biers;
             notifyDataSetChanged();
         }
@@ -97,6 +127,19 @@ public class BookListActivity extends AppCompatActivity {
         }
     }
 
+    public static void initChannels(Context context) {
+        if (Build.VERSION.SDK_INT < 26) {
+            return;
+        }
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel = new NotificationChannel("default",
+                "PokeData favorites",
+                NotificationManager.IMPORTANCE_LOW);
+        channel.setDescription("Channel for PokeData favorites Pokémon");
+        notificationManager.createNotificationChannel(channel);
+    }
+
     public static final String BIERS_UPDATE = "com.octip.cours.inf4042_11.BIERS_UPDATE";
     class BierUpdate extends BroadcastReceiver {
         @Override
@@ -106,19 +149,19 @@ public class BookListActivity extends AppCompatActivity {
         }
     }
 
-    public JSONArray getBiersFromFile(){
+    public JSONObject getBiersFromFile(){
         try {
             InputStream is = new FileInputStream(getCacheDir() + "/" + "bieres.json");
             byte[] buffer = new byte[is.available()];
             is.read(buffer);
             is.close();
-            return new JSONArray(new String(buffer, "UTF-8")); // construction du tableau
+            return new JSONObject(new String(buffer, "UTF-8")); // construction du tableau
         } catch (IOException e) {
             e.printStackTrace();
-            return new JSONArray();
+            return new JSONObject();
         } catch (JSONException e) {
             e.printStackTrace();
-            return new JSONArray();
+            return new JSONObject();
         }
     }
 }

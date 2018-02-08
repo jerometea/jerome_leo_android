@@ -1,11 +1,8 @@
 package com.example.jerome.bookstore;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.widget.Toast;
+import android.content.Intent;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,13 +59,15 @@ public class GetBiersService extends IntentService {
     private void handleActionBiers() {
         URL url = null;
         try {
-            url = new URL("http://binouze.fabrigli.fr/bieres.json");
+            url = new URL("https://pokeapi.co/api/v2/pokemon/");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
-            if(HttpURLConnection.HTTP_OK == conn.getResponseCode()){
-                copyInputStreamToFile(conn.getInputStream(), new File(getCacheDir(), "bieres.json"));
-                Log.i("download", "Biere json downloaded !");
+            int responseCode = conn.getResponseCode();
+            String response = conn.getResponseMessage();
+            if(HttpURLConnection.HTTP_OK == responseCode){
+                InputStream is = conn.getInputStream();
+                copyInputStreamToFile(is, new File(getCacheDir(), "bieres.json"));
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -78,6 +77,7 @@ public class GetBiersService extends IntentService {
     }
     private void copyInputStreamToFile(InputStream in,File file){
         try {
+            file.createNewFile();
             OutputStream out = new FileOutputStream(file);
             byte[] buf = new byte[1024];
             int len;

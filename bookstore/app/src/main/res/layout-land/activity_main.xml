@@ -8,14 +8,15 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:width="0dp"
-        android:text="hello world !"
+        android:text="@string/welcome"
         android:gravity="center"
         />
 
     <Button
+        android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_text"
+        android:text="@string/button"
         android:gravity="center"/>
 
 

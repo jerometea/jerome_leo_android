@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome">Click on the button to see pokemons list</string>
+    <string name="button">Click me</string>
+    <string name="list_title">Pokemon List</string>
+</resources>
